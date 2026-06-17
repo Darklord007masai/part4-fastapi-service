@@ -1,0 +1,70 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "mount_file_id": "1DiLcEiqKp0iMLbHjDjIz803qs9j4GOVS",
+      "authorship_tag": "ABX9TyNJ4Kd0WAlT63G5b/W9neL4"
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "nIifEMw_iL2O",
+        "outputId": "c0e724c5-cd22-4855-e57d-3d64c1c30313"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/tmp/ipykernel_557/1672859574.py:4: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/\n",
+            "  class CustomerFeatures(BaseModel):\n"
+          ]
+        }
+      ],
+      "source": [
+        "from pydantic import BaseModel, Field\n",
+        "from typing import List\n",
+        "\n",
+        "class CustomerFeatures(BaseModel):\n",
+        "    tenure_months: float = Field(..., description=\"Duration of customer relationship in months\", ge=0)\n",
+        "    support_tickets: int = Field(..., description=\"Number of support tickets opened in past 30 days\", ge=0)\n",
+        "    monthly_charges: float = Field(..., description=\"Current monthly bill amount\", ge=0)\n",
+        "    monthly_active_days: int = Field(..., description=\"Days active in app/service this month\", ge=0, le=31)\n",
+        "\n",
+        "    class Config:\n",
+        "        json_schema_extra = {\n",
+        "            \"example\": {\n",
+        "                \"tenure_months\": 12.5,\n",
+        "                \"support_tickets\": 5,\n",
+        "                \"monthly_charges\": 79.99,\n",
+        "                \"monthly_active_days\": 3\n",
+        "            }\n",
+        "        }\n",
+        "\n",
+        "class PredictionResponse(BaseModel):\n",
+        "    churn_probability: float\n",
+        "    predicted_class: int\n",
+        "    risk_level: str\n",
+        "    risk_explanation: str\n",
+        "\n",
+        "class BatchPredictionResponse(BaseModel):\n",
+        "    predictions: List[PredictionResponse]"
+      ]
+    }
+  ]
+}
